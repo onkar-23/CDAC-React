@@ -1,0 +1,56 @@
+const express=require("express");
+const mysql = require("mysql2");
+const cors = require("cors");
+
+
+const app = express();
+const port = 1234;
+
+
+app.use(express.json());
+app.use(express.urlencoded({extented : true}));
+app.use(cors());
+
+const db = mysql.createConnection({
+    host: 'localhost',
+    user:'root',
+    password:'cdacacts',
+    database:'reactdb'
+})
+
+db.connect((err)=>{
+    err == null ? console.log("Connected") : console.log(err.message);
+})
+
+
+app.get("/student",(req,res)=>{
+    const sql= "select * from Students";
+    db.query(sql,(err,result)=>{
+        if (err) return res.status(500).json({message : err.message});
+        else return res.json(result);
+    })
+})
+
+app.post("/student",(req,res)=>{
+    const sql= "INSERT INTO Students (FName, LName, DOB, Email) VALUES (?,?,?,?)";
+   const {FName, LName, DOB, Email}= req.body;
+    db.query(sql,[FName, LName, DOB, Email],(err,result)=>{
+        if (err) return res.status(500).json({message : err.message});
+        else return res.json(result);
+    })
+})
+
+app.delete("/student/:id",(req,res)=>{
+    const sql= "delete from Students where id =?";
+    const {id}= req.params;
+    db.query(sql,[id],(err,result)=>{
+        if (err) return res.status(500).json({message : err.message});
+        else return res.json({message : "deleted "});
+    })
+})
+
+
+
+app.listen(port,()=>{
+    console.log("Running on port : "+port);
+})
