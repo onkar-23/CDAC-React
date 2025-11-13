@@ -13,7 +13,7 @@ app.use(cors());
 const db = mysql.createConnection({
     host: 'localhost',
     user:'root',
-    password:'cdacacts',
+    password:'',
     database:'reactdb'
 })
 
@@ -67,3 +67,4 @@ app.delete("/student/:id",(req,res)=>{
 app.listen(port,()=>{
     console.log("Running on port : "+port);
 })
+
