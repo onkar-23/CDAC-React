@@ -6,9 +6,8 @@ const cors = require("cors");
 const app = express();
 const port = 1234;
 
-
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.urlencoded({extented : true}));
 app.use(cors());
 
 const db = mysql.createConnection({
@@ -39,6 +38,20 @@ app.post("/student",(req,res)=>{
         else return res.json(result);
     })
 })
+app.put("/student/:id", (req, res) => {
+  const sql = "UPDATE Students SET FName=?, LName=?, DOB=?, Email=? WHERE id=?";
+  const { id } = req.params;
+  const { FName, LName, DOB, Email } = req.body;
+  db.query(sql, [FName, LName, DOB, Email, id], (err, result) => {
+    if (err) {
+      console.error("Update error:", err);
+      return res.status(500).json({ message: err.message });
+    } else {
+      return res.json({ message: "Updated successfully" });
+    }
+  });
+});
+
 
 app.delete("/student/:id",(req,res)=>{
     const sql= "delete from Students where id =?";
