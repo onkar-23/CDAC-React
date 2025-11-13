@@ -1,0 +1,46 @@
+.conatiner{
+    justify-content: center;
+    align-items: center;
+    display: block;
+}
+
+.table{
+    align-items: center;
+    padding: 20px;
+    border: 1px solid black;
+    border-radius: 20%;
+    border-collapse: collapse;
+    margin: 20px;
+}
+
+thead{
+    background-color: burlywood;
+}
+
+tbody{
+    background-color: rgb(233, 250, 250);
+}
+
+
+tr,td,th{
+    border: 1px solid black;
+    border-radius: 10%;
+    padding: 10px;
+}
+
+.form{
+    background-color: rgb(250, 200, 126);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    margin: 100px;
+    display: inline-block;
+    box-shadow: 2px 4px 6px rgb(12, 12, 12);
+}
+
+h2{
+    display: inline;
+    justify-content: center;
+    margin: 200px;
+    padding: 20px;
+}
