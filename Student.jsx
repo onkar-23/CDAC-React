@@ -1,14 +1,17 @@
 import React, { useState, useEffect, use } from 'react';
 import axios from 'axios';
- import './Student.css';
+import './Student.css';
 
 export default function Student() {
 
   const [Data, setData] = useState([]);
-  const [FName,setFName]=useState("");
- const [LName,setLName]=useState("");
- const [DOB,setDOB]=useState("");
- const [Email,setEmail]=useState("");
+  const [FName, setFName] = useState("");
+  const [LName, setLName] = useState("");
+  const [DOB, setDOB] = useState("");
+  const [Email, setEmail] = useState("");
+
+
+
   const base_url = "http://localhost:1234/student"
 
   const fetchAll = async () => {
@@ -17,15 +20,15 @@ export default function Student() {
     setData(response.data);
   }
 
-  const handleDelete = async (id)=>{
-    await axios.delete(base_url+`/${id}`);
+  const handleDelete = async (id) => {
+    await axios.delete(base_url + `/${id}`);
     fetchAll();
   }
 
-  const handleAdd= async (e) =>{
+  const handleAdd = async (e) => {
     e.preventDefault();
-    const data= {FName, LName, DOB, Email};
-    await axios.post(base_url,data);
+    const data = { FName, LName, DOB, Email };
+    await axios.post(base_url, data);
     fetchAll();
     setFName("");
     setLName("");
@@ -33,14 +36,68 @@ export default function Student() {
     setEmail("");
   }
 
+  const [editId,setEditId] = useState("");
+const handleEditInit = (item) => {
+  setEditId(item.id);
+  setFName(item.FName);
+  setLName(item.LName);
+
+  // Format DOB properly for input[type=date]
+  const formattedDate = item.DOB ? new Date(item.DOB).toISOString().split('T')[0] : '';
+  setDOB(formattedDate);
+
+  setEmail(item.Email);
+};
+
+
+const handleUpdate = async (e) => {
+  e.preventDefault();
+  const data = { FName, LName, DOB, Email };
+  await axios.put(`${base_url}/${editId}`, data);
+  fetchAll();
+  setFName("");
+  setLName("");
+  setDOB("");
+  setEmail("");
+  setEditId("");
+};
+
   useEffect(() => {
     fetchAll();
   }, [])
 
   return (
     <div className='container'>
-      <div className='table'>
-        <table border="1" style={{ borderCollapse: 'collapse' }}>
+
+
+
+      <div className="form-container">
+      <h2>{editId ? "Edit Student" : "Add Student"}</h2>
+
+        <form onSubmit={editId ? handleUpdate : handleAdd}>
+          <div className="form-group">
+            <label>First Name</label>
+            <input type="text" name="FName" value={FName} onChange={(e) => setFName(e.target.value)} />
+          </div>
+          <div className="form-group">
+            <label>Last Name</label>
+            <input type="text" name="LName" value={LName} onChange={(e) => setLName(e.target.value)} />
+          </div>
+          <div className="form-group">
+            <label>Date of Birth</label>
+            <input type="date" name="DOB" value={DOB} onChange={(e) => setDOB(e.target.value)} />
+          </div>
+          <div className="form-group">
+            <label>Email</label>
+            <input type="email" name="Email" value={Email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <div className="form-group">
+           <button className='bf' type="submit">{editId ? "Update" : "Submit"}</button>
+          </div>
+        </form>
+      </div>
+      <div className='table-div'>
+        <table className='table' >
           <thead className='thead'>
             <tr>
               <th>ID</th>
@@ -49,6 +106,7 @@ export default function Student() {
               <th>Date Of Birth</th>
               <th>Email</th>
               <th>Delete</th>
+              <th>Edit</th>
             </tr>
           </thead>
           <tbody className='tbody'>
@@ -58,9 +116,10 @@ export default function Student() {
                   <td>{item.id}</td>
                   <td>{item.FName}</td>
                   <td>{item.LName}</td>
-                  <td>{item.DOB}</td>
+                  <td>{new Date(item.DOB).toISOString().split('T')[0]}</td>
                   <td>{item.Email}</td>
-                  <td><button className='b' onClick={()=>handleDelete(item.id)}> Delete</button></td>
+                  <td><button className='bt' onClick={() => handleDelete(item.id)}> Delete</button></td>
+                  <td><button className='bt' onClick={() => handleEditInit(item)}> Edit</button></td>
                 </tr>
               ))
             }
@@ -69,31 +128,6 @@ export default function Student() {
         </table>
 
       </div>
-
-          <div className="form-container">
-  <h2>Add Student</h2>
-  <form onSubmit={handleAdd}>
-    <div className="form-group">
-      <label>First Name</label>
-      <input type="text" name="FName" value={FName} onChange={(e)=>setFName(e.target.value)} />
-    </div>
-    <div className="form-group">
-      <label>Last Name</label>
-      <input type="text" name="LName" value={LName} onChange={(e)=>setLName(e.target.value)} />
-    </div>
-    <div className="form-group">
-      <label>Date of Birth</label>
-      <input type="date" name="DOB" value={DOB} onChange={(e)=>setDOB(e.target.value)} />
-    </div>
-    <div className="form-group">
-      <label>Email</label>
-      <input type="email" name="Email" value={Email} onChange={(e)=>setEmail(e.target.value)} />
-    </div>
-    <div className="form-group">
-      <button className='b' type="submit">Submit</button>
-    </div>
-  </form>
-</div>
 
 
     </div>
